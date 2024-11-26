@@ -1,35 +1,28 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from typing import Optional
-from pydantic import BaseModel
 import uvicorn
-from . import schemas
+import schemas, models
+from database import engine, SessionLocal
+from sqlalchemy.orm import Session
 
 app=FastAPI()
 
-@app.get('/blog')
-def index(limit :int = 10 , published: bool = True, sort: Optional[str]= None):
-    if published:
-        return {'data': f'{limit} published blogs from the database'}
-    else:
-        return {'data': f'{limit} blogs from the database'}
+models.Base.metadata.create_all(engine)
 
-@app.get('/blog/unpublished')
-def unpublished():
-    return{'data': 'all unpublished blogs'}
+def get_db():
+    db= SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-@app.get('/blog/{id}')
-def show(id: int):
-    #fetch blog with id = id
-    return{'data': id}
-
-@app.get('/blog/{id}/comments')
-def comments(id: int):
-    #fetch comments of blog with id = id
-    return {'data':{'1': 1, '2': 2, '3':3}}
-    
 @app.post('/blog')
-def create_blog(blog: Blog):
-    return{'data':f'Blog is created with title as [{blog.title}]'} 
+def create_blog(blog: schemas.Blog, db: Session = Depends(get_db)):
+    new_blog = models.Blog(title= blog.title, body= blog.body)
+    db.add (new_blog)
+    db.commit()
+    db.refresh(new_blog)
+    return new_blog
 
 #if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port = 9000)

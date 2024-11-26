@@ -3,3 +3,4 @@ uvicorn
 typing
 pydantic
 uvicorn 
+sqlalchemy
