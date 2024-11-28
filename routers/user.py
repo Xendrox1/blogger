@@ -19,7 +19,7 @@ def login_user(request: schemas.UserLogin, db: Session = Depends(get_db),tags= [
     
     return {"message": "Login successful"}
 
-@router.get('/user/{id}', response_model= schemas.UserResponse,tags= ['user'])
+@router.get('/user/{id}',tags= ['user'])
 def get_user(id:int,db: Session = Depends(get_db)):
     statement=select(models.User).where(models.User.id == id)
     user = db.execute(statement).scalars().first()
@@ -27,7 +27,7 @@ def get_user(id:int,db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail= f"User with id {id} not found")
     return user
 
-@router.post('/user/sign-up', response_model=schemas.UserResponse, tags= ['user'])
+@router.post('/user/sign-up', tags= ['user'])
 def create_user( request:schemas.User, db :Session =Depends(get_db)):
         # Check if the user already exists
     if db.query(models.User).filter(models.User.email == request.email).first():

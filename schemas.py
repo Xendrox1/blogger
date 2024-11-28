@@ -1,14 +1,18 @@
 from pydantic import BaseModel,EmailStr
-from typing import Optional
+from typing import Optional, ClassVar 
 
 class Blog(BaseModel):
     title: str
     body : str
     published: Optional[bool] 
-    
-# class BlogReturn(Blog):
-#     from_attributes= True
-    
+
+class BlogResponse(BaseModel):
+    title: str
+    body: str
+
+    class Config:
+        from_attributes = True  # Replaces orm_mode in Pydantic v2.x
+
 class User(BaseModel):
     Username: str
     email: EmailStr
@@ -17,9 +21,6 @@ class User(BaseModel):
 class UserResponse(BaseModel):
     Username: str
     email: EmailStr
-
-    # class Config:
-    #     from_attributes= True
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -30,6 +31,3 @@ class Show_Blog(BaseModel):
     body: str
 
     writer: UserResponse
-
-    # class Config:
-    #     from_attributes= True

@@ -1,20 +1,21 @@
 from fastapi import APIRouter, Depends, status, HTTPException 
 import schemas, models
 from sqlalchemy.orm import Session 
-from database import  SessionLocal, get_db
+from database import get_db
 from sqlalchemy import select
+
 
 router = APIRouter()
 
-@router.post('/blog')
+@router.post('/blog', tags=["Blog"])
 def create_blog(blog: schemas.Blog, db: Session = Depends(get_db)):
-    new_blog = models.Blog(title= blog.title, body= blog.body)
+    new_blog = models.Blog(title= blog.title, body= blog.body,user_id= 1)
     db.add (new_blog)
     db.commit()
     db.refresh(new_blog)
     return new_blog
 
-@router.get('/blog/all', response_model= list[schemas.Show_Blog], tags=["Blog"] )
+@router.get('/blog/all', tags=["Blog"], response_model=list[schemas.BlogResponse] )
 def all(db: Session = Depends(get_db)):
     statement = select(models.Blog) #select(models.Blog) is used to create a statement for retrieving all blog entries.
     result = db.execute(statement) #db.execute(statement) executes the query, which returns a result object.
@@ -22,7 +23,7 @@ def all(db: Session = Depends(get_db)):
     return blogs
     
 
-@router.get('/blog/{id}',status_code=200,response_model=schemas.Show_Blog, tags=["Blog"])
+@router.get('/blog/{id}',status_code=200, tags=["Blog"])
 def show(id:int, db: Session = Depends(get_db)):
     statement = select(models.Blog).where(models.Blog.id == id)
     results = db.execute(statement)
