@@ -6,16 +6,16 @@ from sqlalchemy.orm import relationship
 class Blog(Base):
     __tablename__='blogs'
     id = Column(Integer,primary_key=True, index= True)
-    title = Column(String, nullable=False)
+    title = Column(String(225), nullable=False)
     body = Column(String, nullable=False)
-    user_id= Column(Integer, ForeignKey('User_Credentials.id'), nullable=True)
+    user_id= Column(Integer, ForeignKey('users.id'), nullable=True)
     writer = relationship("User", back_populates="blogs")
 
 class User(Base):
-    __tablename__='User_Credentials'
+    __tablename__='users'
     id = Column(Integer, primary_key=True, index= True)
-    Username= Column(String, unique= True, index=True)
-    email=Column(String, unique=True,index=True)
-    password=Column(String, nullable=False)
+    Username= Column(String(50), unique= True, index=True)
+    email=Column(String(100), unique=True,index=True)
+    password=Column(String(225), nullable=False)
 
     blogs= relationship("Blog", back_populates = "writer")
