@@ -18,11 +18,6 @@ class UserResponse(BaseModel):
     Username: str
     email: EmailStr
 
-class UserResponse2(BaseModel):
-    Username: str
-    email: EmailStr
-    blogs: Optional[Blog] = None
-
 class BlogResponse(BaseModel):
     title: str
     body: str
@@ -32,3 +27,15 @@ class Show_Blog(BaseModel):
     title: str
     body: str
 
+class UserResponse1(BaseModel):
+    Username: str
+    email: EmailStr
+    blogs: list[Show_Blog] = []
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[EmailStr] = None
+    

@@ -7,3 +7,7 @@ sqlalchemy
 passlib
 bcrypt
 pydantic[email]
+python-jose
+datetime
+Oauth2
+python-multipart
